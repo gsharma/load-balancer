@@ -75,4 +75,46 @@ public class LoadBalancerTest {
     }
   }
 
+  @Test
+  public void testWeightedRoundRobinLB() {
+    final LoadBalancer lb = new WeightedRoundRobinLB();
+    assertEquals(LBStrategy.WEIGHTED_ROUND_ROBIN, lb.getStrategy());
+
+    final IdProvider idProvider = new RandomIdProvider();
+
+    Node node1 = new Node(idProvider);
+    node1.setWeight(new Weight(3));
+    lb.addNode(node1);
+
+    Node node2 = new Node(idProvider);
+    node2.setWeight(new Weight(5));
+    lb.addNode(node2);
+
+    Node node3 = new Node(idProvider);
+    node3.setWeight(new Weight(7));
+    lb.addNode(node3);
+
+    for (int iter = 0; iter < 20; iter++) {
+      Node node = lb.selectNode();
+      // node1 is already drained by this time
+      if (iter == 9) {
+        assertEquals(node2, node);
+      }
+      // node1 and node2 have both drained
+      if (iter == 12 || iter == 13 || iter == 14) {
+        assertEquals(node3, node);
+      }
+      // all nodes drained, we refilled them and started over
+      if (iter == 15) {
+        assertEquals(node1, node);
+      }
+      if (iter == 16) {
+        assertEquals(node2, node);
+      }
+      if (iter == 17) {
+        assertEquals(node3, node);
+      }
+    }
+  }
+
 }

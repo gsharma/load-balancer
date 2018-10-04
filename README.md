@@ -12,5 +12,8 @@ https://www.eecs.harvard.edu/~michaelm/postscripts/handbook2001.pdf
 Suppose that n balls are thrown into n bins, with each ball choosing a bin independently and uniformly at random. Then the maximum load, or the largest number of balls in any bin, is approximately log n / log (log n) with high probability. Now suppose instead that the balls 2 bins chosen independently and uniformly at random, the maximum load is log (log n) / log d + \theta(1) with high probability. The important implication of this result is that even a small amount of choice can lead to drastically diㄦent results in load balancing. Indeed, having just two random choices (i.e., d = 2) yields a large reduction in the maximum load over having one choice, while each additional choice beyond two decreases the maximum load by just a constant factor.
 
 ## Round Robin
-Basic idea is to round-robin between available nodes (next-in-loop) without giving weight to their respective loads or weights (could imply available capacity). 
+Basic idea is to round-robin between available nodes (next-in-loop) without giving weight to their respective loads or weights (could imply available capacity). This generally assumes homogeneity with regard to server capacities.
+
+## Weighted Round Robin
+Weighted round-robin shares the simplicity of round-robin algorithm but gives due consideration to the fact that a fleet of nodes is not always homogeneous and operators could assign relative weights to nodes to let them service a higher percentage of requests. A second consideration here would be load-shedding wherein a set of nodes need to be taken offline for maintenance - having their weights gradually reduced over time can help with draining their activity before taking them completely out of rotation.
 

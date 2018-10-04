@@ -11,11 +11,13 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class Node {
   private final String id;
-  private AtomicReference<Load> loadReference;
+
+  // both scalar dimensions (load and weight) are optional
+  private final AtomicReference<Load> loadReference = new AtomicReference<>(new Load(0.0f));
+  private final AtomicReference<Weight> weightReference = new AtomicReference<>(new Weight(0));
 
   public Node(final IdProvider idProvider) {
     id = idProvider.id();
-    loadReference = new AtomicReference<>(new Load(0.0f));
   }
 
   public String getId() {
@@ -28,6 +30,14 @@ public class Node {
 
   public void setLoad(final Load load) {
     loadReference.set(load);
+  }
+
+  public Weight getWeight() {
+    return weightReference.get();
+  }
+
+  public void setWeight(final Weight weight) {
+    weightReference.set(weight);
   }
 
   @Override
@@ -63,7 +73,10 @@ public class Node {
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
-    builder.append("Node[id:").append(id).append(", ").append(loadReference.get()).append("]");
+    builder.append("Node[id:").append(id);
+    builder.append(", ").append(loadReference.get());
+    builder.append(", ").append(weightReference.get());
+    builder.append("]");
     return builder.toString();
   }
 

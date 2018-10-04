@@ -9,9 +9,10 @@ public class Load implements Comparable<Load> {
   private Float loadValue = 0.0f;
 
   public Load(final Float loadValue) {
-    if (loadValue != null) {
-      this.loadValue = loadValue;
+    if (loadValue == null || loadValue < 0) {
+      throw new IllegalArgumentException("Load value cannot be null or negative");
     }
+    this.loadValue = loadValue;
   }
 
   @Override
