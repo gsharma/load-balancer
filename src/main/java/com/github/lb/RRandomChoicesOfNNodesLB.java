@@ -34,9 +34,9 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author gaurav
  */
-public class RRandomChoicesOfNNodes implements LoadBalancer {
+public class RRandomChoicesOfNNodesLB implements LoadBalancer {
   private static final Logger logger =
-      LogManager.getLogger(RRandomChoicesOfNNodes.class.getSimpleName());
+      LogManager.getLogger(RRandomChoicesOfNNodesLB.class.getSimpleName());
 
   private final ReentrantReadWriteLock superLock = new ReentrantReadWriteLock(true);
   private final WriteLock writeLock = superLock.writeLock();
@@ -50,7 +50,7 @@ public class RRandomChoicesOfNNodes implements LoadBalancer {
   private int randomChoices;
 
   // ensure that randomChoices << activeNodes.size()
-  public RRandomChoicesOfNNodes(final int randomChoices) {
+  public RRandomChoicesOfNNodesLB(final int randomChoices) {
     validateRandomChoices(randomChoices);
     this.randomChoices = randomChoices;
   }
@@ -60,6 +60,11 @@ public class RRandomChoicesOfNNodes implements LoadBalancer {
     Node node = null;
     if (writeLock.tryLock()) {
       try {
+        // 0. short-circuit if just 1 node
+        if (activeNodes.size() == 1) {
+          return activeNodes.get(0);
+        }
+
         // 1. select randomChoices number of random nodes
         final Node[] randomNodes = new Node[randomChoices];
         final List<Integer> selectedIndexes = new ArrayList<>(randomChoices);

@@ -11,5 +11,6 @@ From the paper:
 https://www.eecs.harvard.edu/~michaelm/postscripts/handbook2001.pdf
 Suppose that n balls are thrown into n bins, with each ball choosing a bin independently and uniformly at random. Then the maximum load, or the largest number of balls in any bin, is approximately log n / log (log n) with high probability. Now suppose instead that the balls 2 bins chosen independently and uniformly at random, the maximum load is log (log n) / log d + \theta(1) with high probability. The important implication of this result is that even a small amount of choice can lead to drastically diㄦent results in load balancing. Indeed, having just two random choices (i.e., d = 2) yields a large reduction in the maximum load over having one choice, while each additional choice beyond two decreases the maximum load by just a constant factor.
 
-## 
+## Round Robin
+Basic idea is to round-robin between available nodes (next-in-loop) without giving weight to their respective loads or weights (could imply available capacity). 
 

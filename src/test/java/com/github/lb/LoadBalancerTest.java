@@ -12,18 +12,17 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 /**
- * Tests to check sanity of RRandomChoicesOfNNodes lb strategy.
+ * Tests to check sanity and correctness of various lb strategies.
  * 
  * @author gaurav
  */
-public class RRandomChoicesOfNNodesTest {
-  private static final Logger logger =
-      LogManager.getLogger(RRandomChoicesOfNNodes.class.getSimpleName());
+public class LoadBalancerTest {
+  private static final Logger logger = LogManager.getLogger(LoadBalancerTest.class.getSimpleName());
 
   @Test
-  public void testLbSelection() {
+  public void testRRandomChoicesOfNNodesLB() {
     final int randomChoices = 2;
-    final LoadBalancer lb = new RRandomChoicesOfNNodes(randomChoices);
+    final LoadBalancer lb = new RRandomChoicesOfNNodesLB(randomChoices);
     assertEquals(LBStrategy.SELECT_1_OF_R_RANDOM_CHOICES_FROM_N_NODES, lb.getStrategy());
 
     final IdProvider idProvider = new RandomIdProvider();
@@ -54,6 +53,26 @@ public class RRandomChoicesOfNNodesTest {
       builder.append("\n\t").append(entry.getKey()).append("::").append(entry.getValue());
     }
     logger.info(builder.toString());
+  }
+
+  @Test
+  public void testRoundRobinLB() {
+    final LoadBalancer lb = new RoundRobinLB();
+    assertEquals(LBStrategy.ROUND_ROBIN, lb.getStrategy());
+
+    final IdProvider idProvider = new RandomIdProvider();
+
+    final int nodeCount = 6;
+    Node[] nodes = new Node[nodeCount];
+    for (int iter = 0; iter < nodeCount; iter++) {
+      Node node = new Node(idProvider);
+      lb.addNode(node);
+      nodes[iter] = node;
+    }
+
+    for (int iter = 0; iter < nodeCount * 2; iter++) {
+      assertEquals(nodes[iter % nodeCount], lb.selectNode());
+    }
   }
 
 }
