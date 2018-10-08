@@ -3,7 +3,7 @@ package com.github.lb;
 import java.util.List;
 
 /**
- * Skeleton for load balancer's node selection.
+ * Skeleton for a dynamic load balancer.
  * 
  * @author gaurav
  */

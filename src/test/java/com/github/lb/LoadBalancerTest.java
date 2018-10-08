@@ -48,7 +48,7 @@ public class LoadBalancerTest {
         nodeSelectionFrequency.put(node, 1);
       }
     }
-    StringBuilder builder = new StringBuilder("Node selection distribution::");
+    StringBuilder builder = new StringBuilder("RandomLB node selection distribution::");
     for (Map.Entry<Node, Integer> entry : nodeSelectionFrequency.entrySet()) {
       builder.append("\n\t").append(entry.getKey()).append("::").append(entry.getValue());
     }
