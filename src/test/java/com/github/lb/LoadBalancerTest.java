@@ -37,8 +37,8 @@ public class LoadBalancerTest {
     }
 
     final Map<Node, Integer> nodeSelectionFrequency = new HashMap<>();
-    final int runs = 50;
-    for (int iter = 0; iter < runs; iter++) {
+    final int rounds = 50;
+    for (int iter = 0; iter < rounds; iter++) {
       Node node = lb.selectNode();
       assertNotNull(node);
       if (nodeSelectionFrequency.containsKey(node)) {
@@ -48,7 +48,7 @@ public class LoadBalancerTest {
         nodeSelectionFrequency.put(node, 1);
       }
     }
-    StringBuilder builder = new StringBuilder("RandomLB node selection distribution::");
+    StringBuilder builder = new StringBuilder("Random-LB node selection distribution::");
     for (Map.Entry<Node, Integer> entry : nodeSelectionFrequency.entrySet()) {
       builder.append("\n\t").append(entry.getKey()).append("::").append(entry.getValue());
     }
@@ -70,9 +70,14 @@ public class LoadBalancerTest {
       nodes[iter] = node;
     }
 
-    for (int iter = 0; iter < nodeCount * 2; iter++) {
-      assertEquals(nodes[iter % nodeCount], lb.selectNode());
+    StringBuilder builder = new StringBuilder("Round-Robin-LB node selection distribution::");
+    int rounds = nodeCount * 2;
+    for (int iter = 0; iter < rounds; iter++) {
+      Node selectedNode = lb.selectNode();
+      assertEquals(nodes[iter % nodeCount], selectedNode);
+      builder.append("\n\t").append(selectedNode);
     }
+    logger.info(builder.toString());
   }
 
   @Test
@@ -94,8 +99,13 @@ public class LoadBalancerTest {
     node3.setWeight(new Weight(7));
     lb.addNode(node3);
 
-    for (int iter = 0; iter < 20; iter++) {
+    StringBuilder builder =
+        new StringBuilder("Weighted-Round-Robin-LB node selection distribution::");
+    int rounds = 20;
+    for (int iter = 0; iter < rounds; iter++) {
       Node node = lb.selectNode();
+      builder.append("\n\t").append(node);
+
       // node1 is already drained by this time
       if (iter == 9) {
         assertEquals(node2, node);
@@ -115,6 +125,7 @@ public class LoadBalancerTest {
         assertEquals(node3, node);
       }
     }
+    logger.info(builder.toString());
   }
 
 }

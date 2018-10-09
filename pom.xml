@@ -2,19 +2,19 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.lb</groupId>
-  <artifactId>lb-strats</artifactId>
+  <artifactId>load-balancer</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>lb-strats</name>
+  <name>load-balancer</name>
   <url>http://maven.apache.org</url>
 
   <scm>
-    <connection>scm:git:git://github.com:gsharma/lb-strats.git
+    <connection>scm:git:git://github.com:gsharma/load-balancer.git
       </connection>
     <developerConnection>
-        scm:git:git@github.com:gsharma/lb-strats.git
+        scm:git:git@github.com:gsharma/load-balancer.git
       </developerConnection>
-    <url>http://github.com/gsharma/lb-strats</url>
+    <url>http://github.com/gsharma/load-balancer</url>
   </scm>
 
   <dependencies>
