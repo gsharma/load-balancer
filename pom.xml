@@ -8,20 +8,32 @@
   <name>load-balancer</name>
   <url>http://maven.apache.org</url>
 
-  <scm>
-    <connection>scm:git:git://github.com:gsharma/load-balancer.git
-      </connection>
-    <developerConnection>
-        scm:git:git@github.com:gsharma/load-balancer.git
-      </developerConnection>
-    <url>http://github.com/gsharma/load-balancer</url>
-  </scm>
+  <properties>
+    <github.global.server>github</github.global.server>
+    <github.user.name>gsharma</github.user.name>
+    <github.repo.name>load-balancer</github.repo.name>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <junit.version>4.12</junit.version>
+    <log4j.version>2.11.1</log4j.version>
+    <javac.target>1.8</javac.target>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>load-balancer-mvn-repo</id>
+      <url>https://raw.githubusercontent.com/gsharma/load-balancer/mvn-repo/</url>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -34,28 +46,39 @@
    <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
-      <version>2.11.0</version>
+      <version>${log4j.version}</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
-      <version>2.11.0</version>
+      <version>${log4j.version}</version>
       <type>jar</type>
     </dependency>
   </dependencies>
 
   <build>
+    <extensions>
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>1.6.1</version>
+      </extension>
+    </extensions>
+
     <plugins>
+      <!-- compiler -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.6.1</version>
         <configuration>
-          <source>1.9</source>
-          <target>1.9</target>
+          <source>${javac.target}</source>
+          <target>${javac.target}</target>
         </configuration>
       </plugin>
+
+      <!-- enforcer -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -74,6 +97,108 @@
           </execution>
         </executions>
       </plugin>
+
+      <!-- shade -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- deploy -->
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>3.0.0-M1</version>
+        <configuration>
+          <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
+        </configuration>
+      </plugin>
+
+      <!-- gh site -->
+      <plugin>
+        <groupId>com.github.github</groupId>
+        <artifactId>site-maven-plugin</artifactId>
+        <version>0.12</version>
+        <configuration>
+          <!-- git commit message -->
+          <message>Maven artifacts for ${project.version}</message>
+          <!-- disable webpage processing -->
+          <noJekyll>true</noJekyll>
+          <!-- matches distribution management repo url above -->
+          <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+          <!-- remote branch name -->
+          <branch>refs/heads/mvn-repo</branch>
+          <includes><include>**/*</include></includes>
+          <merge>true</merge>
+          <repositoryName>${github.repo.name}</repositoryName>
+          <repositoryOwner>${github.user.name}</repositoryOwner>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>site</goal>
+            </goals>
+            <phase>deploy</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- code-coverage -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.2</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>post-unit-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <!-- Sets the path to the file which contains the execution data. -->
+              <dataFile>target/jacoco.exec</dataFile>
+              <!-- Sets the output directory for the code coverage report. -->
+              <outputDirectory>target/jacoco-ut</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <systemPropertyVariables>
+          <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+
+  <distributionManagement>
+    <repository>
+      <id>internal.repo</id>
+      <name>Temporary Staging Repository</name>
+      <url>file://${project.build.directory}/mvn-repo</url>
+    </repository>
+  </distributionManagement>
+
 </project>

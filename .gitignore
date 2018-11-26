@@ -4,3 +4,4 @@
 /.classpath
 /.project
 load-balancer.log
+dependency-reduced-pom.xml

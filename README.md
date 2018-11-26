@@ -1,3 +1,7 @@
+[![Build Status](https://img.shields.io/travis/gsharma/load-balancer/master.svg)](https://travis-ci.org/gsharma/load-balancer)
+[![Test Coverage](https://img.shields.io/codecov/c/github/gsharma/load-balancer/master.svg)](https://codecov.io/github/gsharma/load-balancer?branch=master)
+[![Licence](https://img.shields.io/hexpm/l/plug.svg)](https://github.com/gsharma/load-balancer/blob/master/LICENSE)
+
 # Load Balancing
 
 ## Select 1 of R random choices from N nodes (Random)
@@ -29,3 +33,14 @@ Weighted round-robin shares the simplicity of round-robin algorithm but gives du
 | **Backend Pools**     | Dynamic, Static                                                |
 | **SNAT support**      | Transparent (no SNAT), Automapping (via LB IP), IP Lists       |
 | **L7 support**        | Regex rules for URL blacklists, rewrites, sticky sessions      |
+
+## Load Balancer as a library
+Add mvn dependency:
+```xml
+<dependency>
+  <groupId>com.github.lb</groupId>
+  <artifactId>load-balancer</artifactId>
+  <version>1.0-SNAPSHOT</version>
+</dependency>
+```
+
